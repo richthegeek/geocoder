@@ -1,6 +1,8 @@
 app = require('express').Router()
 request = require 'request'
 
+ipmod = require 'ip'
+
 app.get '/', (req, res, next) ->
 	res.send {
 		code: "HELLO_WORLD",
@@ -14,6 +16,14 @@ disable_paid = false
 
 app.get '/:ip', (req, res, next) ->
 	ip = req.params.ip
+
+	try
+		ipmod.toBuffer ip
+		if not ipmod.isPublic ip
+			throw new Error 'IP is not public'
+	catch e
+		return next e
+
 	# stages...
 	# if we have a key, try get from the paid site
 	# if we dont have a key, or we are out of requests, get from the free site
