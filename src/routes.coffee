@@ -49,6 +49,10 @@ app.get '/:ip', (req, res, next) ->
 					pass: req.settings.maxmind_pass
 
 			request opts, (err, resp, body) ->
+				if err
+					console.log 'maxmind api error', err
+					return callback err
+
 				body = JSON.parse body
 				data = map body, {
 					# this is just a map to the "free" format
@@ -69,7 +73,7 @@ app.get '/:ip', (req, res, next) ->
 					continent: 'continent.names.en'
 					traits: 'traits'
 				}
-				console.info 'Maxmind queries remaining:', body.maxmind.queries_remaining
+				try console.info 'Maxmind queries remaining:', body.maxmind.queries_remaining
 				if body.maxmind.queries_remaining < 100
 					disable_paid = true
 				callback err, data
