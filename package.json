@@ -1,0 +1,15 @@
+{
+  "name": "geocode-server",
+  "description": "Interim server between Faction and Maxmind",
+  "private": true,
+  "version": "0.0.1",
+  "dependencies": {
+    "async": "^0.9.0",
+    "bluebird": "^2.1.3",
+    "compression": "^1.0.8",
+    "cors": "^2.3.1",
+    "express": "^4.4.5",
+    "mongodb": "^1.4.7",
+    "morgan": "^1.1.1"
+  }
+}
