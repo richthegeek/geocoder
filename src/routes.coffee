@@ -73,9 +73,12 @@ app.get '/:ip', (req, res, next) ->
 					continent: 'continent.names.en'
 					traits: 'traits'
 				}
-				try console.info 'Maxmind queries remaining:', body.maxmind.queries_remaining
-				if body.maxmind.queries_remaining < 100
-					disable_paid = true
+				try
+					console.info 'Maxmind queries remaining:', body.maxmind.queries_remaining
+					if body.maxmind.queries_remaining < 100
+						disable_paid = true
+				catch e
+					console.log 'no queries?', body
 				callback err, data
 
 	fns_free =
