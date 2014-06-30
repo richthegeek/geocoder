@@ -22,7 +22,7 @@ app.get '/:ip', (req, res, next) ->
 		if not ipmod.isPublic ip
 			throw new Error 'IP is not public'
 	catch e
-		return next e
+		return res.send 400, e.message
 
 	# stages...
 	# if we have a key, try get from the paid site
