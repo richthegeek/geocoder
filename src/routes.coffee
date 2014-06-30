@@ -9,6 +9,9 @@ app.get '/', (req, res, next) ->
 		spout: "https://twitter.com/trakapo"
 	}
 
+# this little flag is for when the quota runs out
+disable_paid = false
+
 app.get '/:ip', (req, res, next) ->
 	ip = req.params.ip
 	# stages...
@@ -30,7 +33,11 @@ app.get '/:ip', (req, res, next) ->
 	fns_paid =
 		# for now, keys are just "is it 16 hex chars?"
 		# later this might be based on actual faction/trakapo subscriptions
-		check: (callback) -> callback null, req.query?.key?.match? and req.query.key.match /^[0-9a-f]{16}$/
+		check: (callback) ->
+			if disable_paid is true
+				console.warn 'Maxmind queries are disabled due to low quota! Restart the server once it is topped up.'
+				return callback null, false, 'Low quota'
+			callback null, req.query?.key?.match? and req.query.key.match /^[0-9a-f]{16}$/
 		get_cache: (callback) -> req.db.paid.findOne {_id: ip}, callback
 		set_cache: (data, callback) -> req.db.paid.update {_id: ip}, data, {upsert: true}, callback
 		api: (callback) ->
@@ -63,6 +70,8 @@ app.get '/:ip', (req, res, next) ->
 					traits: 'traits'
 				}
 				console.info 'Maxmind queries remaining:', body.maxmind.queries_remaining
+				if body.maxmind.queries_remaining < 100
+					disable_paid = true
 				callback err, data
 
 	fns_free =
