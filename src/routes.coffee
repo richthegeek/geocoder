@@ -19,7 +19,7 @@ cache_stats =
 	miss: 0
 
 rand_write = (chance, args...) ->
-	if Math.floor(Math.rand() * chance) is 0
+	if Math.floor(Math.random() * chance) is 0
 		console.log.apply console, args
 
 app.get '/:ip', (req, res, next) ->
