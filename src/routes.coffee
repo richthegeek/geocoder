@@ -14,6 +14,14 @@ app.get '/', (req, res, next) ->
 # this little flag is for when the quota runs out
 disable_paid = false
 
+cache_stats =
+	hit: 0
+	miss: 0
+
+rand_write = (chance, args...) ->
+	if Math.floor(Math.rand() * chance) is 0
+		console.log.apply console, args
+
 app.get '/:ip', (req, res, next) ->
 	ip = req.params.ip
 
@@ -84,7 +92,7 @@ app.get '/:ip', (req, res, next) ->
 					traits: 'traits'
 				}
 				try
-					console.info 'Maxmind queries remaining:', body.maxmind.queries_remaining
+					rand_write 10, 'Maxmind queries remaining:', body.maxmind.queries_remaining
 					if body.maxmind.queries_remaining < 100
 						disable_paid = true
 				catch e
@@ -126,6 +134,14 @@ app.get '/:ip', (req, res, next) ->
 		if err
 			return res.send err
 		else
+			if cached
+				cache_stats.hit++
+			else
+				cache_stats.miss++
+
+			perc = Math.round(100 * cache_stats.hit / (cache_stats.hit + cache_stats.miss)) + '%'
+			rand_write 20, 'Cache stats:', cache_stats.hit, cache_stats.miss, perc
+
 			delete row._id
 			row.cached = cached
 			res.send row
