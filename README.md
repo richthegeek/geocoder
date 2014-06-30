@@ -11,6 +11,7 @@ requirements
  * async
  * bluebird
  * mongodb
+ * request
 * mongodb - tested on v2.6.3
 * a [MaxMind](https://www.maxmind.com) account with Omni api quota available
 

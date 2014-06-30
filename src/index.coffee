@@ -22,6 +22,9 @@ app.use (req, res, next) ->
 	req.settings = settings
 	next()
 
+# gzip compression
+app.use do require 'compression'
+
 # logging
 app.use require('morgan')('short')
 
