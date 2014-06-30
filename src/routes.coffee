@@ -62,6 +62,7 @@ app.get '/:ip', (req, res, next) ->
 					continent: 'continent.names.en'
 					traits: 'traits'
 				}
+				console.info 'Maxmind queries remaining:', body.maxmind.queries_remaining
 				callback err, data
 
 	fns_free =
